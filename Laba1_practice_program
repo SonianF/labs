@@ -1,0 +1,77 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+int PROVERKA_size_array() {            // Проверка на целое число для количества элементов массива
+    string str_size = "";
+    std::getline(std::cin, str_size); // Ввод строки
+    if (str_size.find_first_not_of("1234567890") != -1) { // Проверка на содержание только цифр
+        std::cout << "Error! Please, enter nonegaive integer number:" << endl; //Просим ввести значение заново
+        return PROVERKA_size_array(); //возвращаем на начальный этап проверки
+    }
+    else {
+        int str_i = stoi(str_size);// Преобразование строки в int, чтобы сравнить с минимальной длинной массива
+        if (str_i < 2) {  //для корректной работы значениедолжно быть больше 1
+            std::cout << "ERROR! The value you entered is too small. Please, enter it again: " << endl; //Просим ввести значение заново
+            return PROVERKA_size_array();//возвращаем на начальный этап проверки
+        }
+        else {  //если все верно, то продолжаем работу с введенным значением
+            return str_i;
+        }
+    }
+}
+
+void add_array(string array[], int size) { // Добавление элемента в массив
+    int count = 0;
+    while (count < (size)) {
+        string element;
+        std::cout << "Enter an element of array : ";
+        std::getline(std::cin, element);
+        // Если строка не содержит пробелов, то мы инициализируем элемент как эту строку
+        if (element.find_first_of(" ") == -1) {
+            array[count] = element;
+            ++count;
+        }
+        else {
+            std::cout << "ERROR! Please, without space ";
+            array[count] = element; //сохраняем элемент без пробела в массив
+        }
+    }
+}
+
+string add_k() {  //строка со значением к
+    string element; //объявляем переменную
+    std::cout << "Enter the number k: ";
+    std::getline(std::cin, element); 
+    if (element.find_first_not_of("1234567890.-") != -1) { //проверка на ввод только чисел
+        std::cout << "ERROR! Enter value again:" << '\n';
+        return add_k(); //повтор цикла в случае ошибки
+    }
+    else {
+        return element; //использование элемента
+
+    }
+}
+
+int main() {                                 //основная программа
+    string continuation;                    //переменная для продолжения работы программы
+    while (continuation != "no") {
+        int size1 = 0;      //начальная величина массива
+        std::cout << "Enter the number of array element: "; // Получение от пользователя размера массива
+        size1 = PROVERKA_size_array(); // Получение от пользователя размера массива после проверки
+        string* array1 = new string[size1]; // Выделение памяти для массива
+        add_array(array1, size1);   //ввод пользователем значений для массива
+        string element = add_k(); //ввод пользователем значения к
+        int count = 0;            //введение переменной для дальнейшего цикла
+        for (int i = 0; i < size1; ++i) { //цикл, в котором ставится ограничение - размер массива
+            if (array1[i] == element) { //проверка на  какой-то элемент массива равен ли он значению к
+                ++count;                //увеличение переменной
+            }
+        }
+        std::cout << "'k' is repeating in the array " << count << " times" << endl;  //вывод полученного результата
+        std::cout << "If you want to finish type no, else click 'enter'  " << endl;
+        std::getline(cin, continuation);// ввод значение на продолжение
+        delete[] array1; // Очистка памяти
+    }
+    return 0;
+}
