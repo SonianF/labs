@@ -1,0 +1,108 @@
+#include <iostream> //библиотека для ввода/вывода
+#include <iomanip> //библиотека для оформления таблицы 
+#include <string>  //библиотека для работы со строками
+using namespace std; //чтобы каждый раз не писать std::
+
+double x;
+double alpha;
+int n = 1;                  //порядковый номер члена функционального ряда (по условию это 1)
+double initial_variable;  //наши начальные вычисление
+double previous_variable;     //наши вычисления для следущей переменной
+double summa;             //сумма для уже имеющихся значений
+double En_0;                //значение погрешности
+
+double number_series(int n, double x)   //вычисление n-ого члена (меняющаяся переменная)
+{
+	double initial_variable; //берем начальное значение переменной
+	initial_variable = pow(-1, (n + 1)) * ((pow(x, 2 * n)) / (2 * n * (2 * n + 1)));
+	return initial_variable; //помещаем в переменную уже новое значение
+}
+
+double En_edual() //вычисление погрешности
+{
+	n++; //значение символа изменяется на 1
+	previous_variable = initial_variable; //найденная нами переменная становится предыдущим символом ряда
+	initial_variable = number_series(n, x); //находим значение для символа n+1
+	En_0 = abs(initial_variable / summa); // вычисляется погрешность
+	return En_0; // помещаем в переменную только что полученное значение
+}
+
+void output_table()  //создание таблицы со значениями
+{
+	cout << "n = " << std::setw(5) << n << " | "     //setw - установка ширины столбца таблицы
+		<< "An = " << std::setw(15) << initial_variable << " | "
+		<< "S = " << std::setw(9) << summa << " | "
+		<< "En = " << std::setw(12) << En_0 << " | " << "\n";
+}
+
+void first_start() // функция для вывода первого значения в таблицу
+{
+	initial_variable = number_series(n, x);
+	summa += initial_variable;
+	En_0 = abs(number_series(n + 1, x) / summa); // погрешность - это значение следующего члена, деленого на сумму предыдущих
+	output_table(); //отправлем полученный результат в таблицу
+}
+
+void algoritm() // функция для вывода остальных значений в таблицу
+{
+	previous_variable = initial_variable;
+	n++;
+	initial_variable = number_series(n, x);
+	summa += initial_variable;
+	En_0 = abs(number_series(n + 1, x) / summa);
+	output_table();  //отправлем полученный результат в таблицу
+}
+
+
+double PROVERKA_NA_x() //проверка на введеное значение х
+{
+	cout << "Enter x: " << endl;
+	while (!(cin >> x) || (cin.peek() != '\n') || (x < -1) || (x > 1)) //проверка на ограничения
+	{
+		cin.clear();
+		cout << "Please, enter a correct -1 <= x <= 1 : " << endl;
+	}
+	return x;
+}
+
+double PROVERKA_NA_alpha() //проверка на введеное значение alpha
+{
+	cout << "Enter alpha: " << endl;
+	while (!(cin >> alpha) || (cin.peek() != '\n') || (alpha < 0)) //проверка на ограничения
+	{
+		cin.clear();
+		cout << "Please, enter a correct 0 <= alpha: " << endl;
+	}
+	return alpha;
+}
+
+int main()
+{
+	string result; //введение строковой переменной для повтора дальнейшей работы программы
+	bool working = true; //вводим условие, при котором работает программа
+	while (working) //пока наше значение является истиной
+	{
+		PROVERKA_NA_x();      //запускаем заранее написанные функции для проверки и работы программы
+		PROVERKA_NA_alpha();
+		first_start();
+		if (alpha == int(alpha)) //если alpha целое, то она выступает в роли счетчика искомых значений
+		{
+			while (n < alpha) {
+				algoritm();
+			}
+		}
+		else                     //если alpha типа double, то она выступает в роли погрешности
+			while (En_0 > alpha)
+			{
+				algoritm();
+			}
+		n = 1;
+		summa = initial_variable = En_0 = 0; //возвращаем переменным их первоначальные значения
+		cout << "Do you want to continue? (if you want to finish type no) "; // выбор пользователя, оставаться ли в программе
+		cin >> result;
+		if (result == "NO" || result == "No" || result == "no") { //если пользователь вводит no, то программа завершается
+			cout << "Thank you for using our program! All the best!";
+			return 0;
+		}
+	}
+}
