@@ -1,0 +1,80 @@
+#include <iostream> // подключение библиотеки для ввода и вывода
+#include <string> //подключение библиотеки для работы со строками
+
+using namespace std;
+double const conv = 3.14159265 / 180; //введение коэффициента для дальнейших преобразований
+string angle;
+string decis; // ввели начальную переменную на вход
+
+bool PROVERKA_decis(string decis) //проверка на вход в программу
+{
+	if (decis == "yes")
+		return true;
+	else
+		return false;
+}
+
+bool PROVERKA_angle(string angle) //проверка на разные меры измерения угла
+{
+	if (angle == "rad" || angle == "deg")
+		return true;
+	else
+		return false;
+}
+
+int main() {
+      cout << "This program will help you to calculate angle parametres. \n";
+	string decision = "1";
+	while (decision != "0") {
+		cout << "Run the program again? yes or no. \n";
+		getline(cin, decision); // вход в программу
+
+		if (decision != "0") //если введено ненулевое значение, то программа продолжает работу
+		  { 
+		     while (PROVERKA_decis(decision) == false) 
+		       {
+		           if (decision == "no")
+                                           {                 //проверка, если пользователь вводит no
+	                                cout << "Thanks for using our algorithm. All the best!";
+		                  return 0; }
+		           else {                                    //проверка, если пользователь вводит некорректные значения
+		                        cout << "repeat please: yes or no "; 
+			          getline(cin, decision);}
+		        }
+
+	                     string angels; //значение единицы угла, которое вводит пользователь
+		       cout << "Select and enter the angle measurement system : deg(degree) or rad(radian). \n";
+		       getline(cin, angels); // ввод единицы измерения
+
+		       while (PROVERKA_angle(angels) == false) //проверка правильно введенного числа
+			{cout << "repeat please: deg(degree) or rad(radian) ";
+			   getline(cin, angels);}
+
+		       if (angels == "rad") // если ввели значение радиан
+			{double rad;
+			  std::cout << "Enter value in radian: " << endl;
+			  std::cin >> rad;
+				while (std::cin.fail()) 
+                                                                     {std::cin.clear();
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+					std::cout << "ERROR! Enter value in radian: ";
+					std::cin >> rad;}
+				std::cout << "sin(" << rad << ") =" << sin(rad) << endl;
+				std::cout << "cos(" << rad << ") =" << cos(rad) << endl;
+				std::cout << "tan(" << rad << ") =" << tan(rad) << endl;
+				cout << "Thanks for using our algorithm. All the best! \n ";}
+
+		        if (angels == "deg") // если ввели значение в градусах
+			  {double deg;
+		                   cout << "Enter value in degree: " << endl;
+		                   std::cin >> deg;
+				while (std::cin.fail()) 
+                                                                     {std::cin.clear();
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+					cout << "ERROR! Enter value in degree: ";
+					std::cin >> deg;}
+				cout << "sin(" << deg << ") =" << (sin(deg * conv)) << endl;
+				cout << "cos(" << deg << ") =" << (cos(deg * conv)) << endl;
+				cout << "tan(" << deg << ") =" << (tan(deg * conv)) << endl;
+				cout << "Thanks for using our algorithm. All the best! \n ";}
+	}
