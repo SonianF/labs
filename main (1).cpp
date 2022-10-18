@@ -12,7 +12,7 @@ int PROVERKA_lenght() {  //проверка введенных значений 
     getline(cin, lenght0);
     if (lenght0.find_first_not_of("1234567890") != -1) { //если введенное значение содержит что-то кроме цифр, то выдается ошибка
         cout << "ERROR! Please, enter nonegaive inter number: " << endl;
-        return PROVERKA_lenght; //повторный ввод
+        return PROVERKA_lenght(); //повторный ввод
     }
     else {
         int lenght = stoi(lenght0); //если только цифры, то создаем переменную типа int
@@ -91,3 +91,4 @@ int main() {
     }
     cout << "Goodbye! Thank you for using our program! "<<endl;
 }
+
