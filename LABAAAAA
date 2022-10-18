@@ -1,0 +1,125 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+using namespace std;
+int lenght;
+const int critical_lenght = 25;
+
+int PROVERKA_lenght() {  //проверка введенных значений для длины массива
+    cout << "Input array lenght: ";
+    string lenght0 = ""; //вводим строковую переменную
+    getline(cin, lenght0);
+    if (lenght0.find_first_not_of("1234567890") != -1) { //если введенное значение содержит что-то кроме цифр, то выдается ошибка
+        cout << "ERROR! Please, enter nonegaive inter number: " << endl;
+        getline(cin, lenght0); //повторный ввод
+    }
+    else {
+        int lenght = stoi(lenght0); //если только цифры, то создаем переменную типа int
+        return lenght;
+    }
+}
+
+vector<int> random_array(vector<int> array) { //создаем массив со случайными массивами заданной длины
+    for (int i = 0; i < array.size(); i++)
+        array[i] = rand() % 1000;
+    return array;
+}
+
+/*
+vector<int> heap_sort(vector<int> array) { 
+        int i = lenght/2;
+        while (i > 0) {
+            int largest = i;
+            int l = 2 * i + 1; // левый = 2*i + 1
+            int r = 2 * i + 2; // правый = 2*i + 2
+            if (l < lenght && array[l] > array[largest]) {
+                largest = l;
+            }
+              //  largest = l;
+            if (r < lenght && array[r] > array[largest]) {
+                largest = r;
+            }
+            if (largest != i)
+            {
+                swap(array[i], array[largest]);
+                heap_sort(array);
+                //return largest;
+            }
+        }
+        return array;
+}
+
+vector<int> heapSort(vector<int> array) {
+    for (int i = lenght / 2 - 1; i >= 0; i--) {
+        heap_sort(array);
+    }
+    for (int i = lenght - 1; i >= 0; i--) {
+        swap(array[0], array[i]);
+        heap_sort(array);
+    }
+    return heap_sort(array);
+} 
+*/
+/*
+vector<int> HeapSort(vector <int> array) {
+    make_heap(array.begin(), array.end());
+    for (auto i = array.end(); i != array.begin(); i--) {
+        pop_heap(array.begin(), i);
+    }
+    return array;
+} */
+
+vector<int> DownHeap(vector<int> array, int i, int count, int current) {
+    int Child;
+    while (i < (count / 2)) {
+        Child = (i + 1) * 2 - 1;
+        if ((Child<count-1)&& (array[Child]< array[Child+1])) Child++;
+        if (current >= array[Child]) break;
+        array[i] = array[Child];
+        i = Child;
+    }
+    array[i] = current;
+    return array;
+}
+
+vector<int> heapSort(vector<int> array, int count) {
+    int i;
+    int current;
+    for (i = (count / 2) - 1; i >= 0; i--) DownHeap(array, i, count, array[i]);
+    for (i = count - 1; i > 0; i--) {
+        current = array[i];
+        array[i] = array[0];
+        DownHeap(array, 0, i, current);
+    }
+    return array;
+
+}
+
+void heap_array_output(vector<int> array) { //выводим отсортированный массив
+    cout << "The array sorted by heap: ";
+    for (int i = 0; i < array.size(); i++)
+        cout << array[i] << "  ";
+    cout << "\n";
+}
+void generated_array_output(vector<int> array) { //выводим массив из случайных значений
+    cout << "The random generated array: ";
+    for (int i = 0; i < array.size(); i++)
+        cout << array[i] << "  ";
+    cout << "\n";
+}
+
+int main() {
+    string continuation;              //переменная для дальнейшей повторной работы алгоритма
+    while (continuation != "no") {   
+        lenght = PROVERKA_lenght();  //вводим переменную из функции, отвечающей за проверку ограничений на переменную
+        vector<int> void_array(lenght); // создаем массив зависящий от длины 
+        vector<int> filled_array = random_array(void_array);//создаем массив со случайными значениями
+        //vector<int> heapify = heap_sort(filled_array, lenght); // сортируем массив.
+        vector<int> heapify = heapSort(filled_array, lenght); // сортируем массив
+        generated_array_output(filled_array); //выводим неотсортированный массив
+        heap_array_output(heapify); // выводим отсортированный массив
+        cout << "If you want to finish type no, else click..." << endl;
+        getline(cin, continuation);
+    }
+}
