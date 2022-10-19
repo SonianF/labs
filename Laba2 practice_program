@@ -19,33 +19,33 @@ vector<double> En_0_v;
 double PROVERKA_NA_x() //проверка на введеное значение х
 {
 int input;
-cout « "Enter x: " « endl;
-while (!(cin » input) || (cin.peek() != '\n') || (input < -1) || (input > 1)) //проверка на ограничения
+cout << "Enter x: " << endl;
+while (!(cin >> input) || (cin.peek() != '\n') || (input < -1) || (input > 1)) //проверка на ограничения
 {
 cin.clear();
 cin.ignore(32767, '\n'); //очистка потока ввода
-cout « "Please, enter a correct -1 <= x <= 1 : " « endl;
+cout << "Please, enter a correct -1 <= x <= 1 : " << endl;
 }
 return input;
 }
 
 double PROVERKA_NA_alpha() //проверка на введеное значение alpha
 {
-cout « "Enter alpha: " « endl;
-while (!(cin » alpha) || (cin.peek() != '\n') || (alpha < 0)) //проверка на ограничения
+cout << "Enter alpha: " << endl;
+while (!(cin >> alpha) || (cin.peek() != '\n') || (alpha < 0)) //проверка на ограничения
 {
 cin.clear();
 cin.ignore(32767, '\n'); //очистка потока ввода
-cout « "Please, enter a correct 0 <= alpha: " « endl;
+cout << "Please, enter a correct 0 <= alpha: " << endl;
 }
 return alpha;
 }
 
 void output_table(int n, double a, double s, double En) {
-cout « "n = " « std::setw(5) « n « " | " //setw - установка ширины столбца таблицы
-« "An = " « std::setw(15) « a « " | "
-« "S = " « std::setw(9) « s « " | "
-« "En = " « std::setw(12) « En « " | " « "\n";
+cout << "n = " << std::setw(5) << n <<" | " //setw - установка ширины столбца таблицы
+<< "An = " << std::setw(15) << a << " | "
+<< "S = " << std::setw(9) << s << " | "
+<< "En = " << std::setw(12) << En << " | " << "\n";
 }
 
 
@@ -72,8 +72,8 @@ new_x = PROVERKA_NA_x(); //запускаем заранее написанны�
 alpha = PROVERKA_NA_alpha();
 if (new_x == x) { //при повторном вводе сравниваем этот х и предыдущий
 if ((alpha == int(alpha) && alpha < number.back()) || (alpha != int(alpha) && En_0_v.back() < alpha))
-cout « "The value has already been calculated: \n";
-cout « "Previous calculations: " « endl;
+cout << "The value has already been calculated: \n";
+cout << "Previous calculations: " << endl;
 for (int i = 0; i < number.size(); i++)
 output_table(number[i], variable_v[i], summa_v[i], En_0_v[i]);
 n = number.back(); //присваиваем нашему начальному н значение последнего введенного в ветор
@@ -92,23 +92,24 @@ summa = 0;
 if (alpha == int(alpha)) //если alpha целое, то она выступает в роли счетчика искомых значений
 {
 if (n <= alpha) //если альфа больше прошлого числа итерций, то считаем новые элементы
-cout « "New iteration: " « endl;
+cout << "New iteration: " << endl;
 for (n += 1; n <= alpha; n++)
 calculation(x, n);
 }
 else { //если alpha типа double, то она выступает в роли погрешности
 if (En_0 > alpha)
-cout « "New: " « endl;
+cout << "New: " << endl;
 while (En_0 > alpha) {
 n++;
 calculation(x, n);
 }
 }
-cout « "Do you want to continue? (if you want to finish type no) "; // выбор пользователя, оставаться ли в программе
-cin » result;
+cout << "Do you want to continue? (if you want to finish type no) "; // выбор пользователя, оставаться ли в программе
+cin >> result;
 if (result == "NO" || result == "No" || result == "no") { //если пользователь вводит no, то программа завершается
-cout « "Thank you for using our program! All the best!";
+cout << "Thank you for using our program! All the best!";
 return 0;
+}
 }
 }
 }
