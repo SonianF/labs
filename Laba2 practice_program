@@ -18,7 +18,7 @@ vector<double> En_0_v;
 
 double PROVERKA_NA_x() //проверка на введеное значение х
 {
-int input;
+double input;
 cout << "Enter x: " << endl;
 while (!(cin >> input) || (cin.peek() != '\n') || (input < -1) || (input > 1)) //проверка на ограничения
 {
