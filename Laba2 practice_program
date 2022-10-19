@@ -1,94 +1,114 @@
-#include <iostream>
-#include <string>
+#include <iostream> //библиотека для ввода/вывода
+#include <iomanip> //библиотека для оформления таблицы
+#include <string> //библиотека для работы со строками
 #include <vector>
-#include <algorithm>
-using namespace std;
-int lenght;
-const int critical_lenght = 15;
+using namespace std; //чтобы каждый раз не писать std::
 
-int PROVERKA_lenght() {  //проверка введенных значений для длины массива
-    cout << "Input array lenght: ";
-    string lenght0 = ""; //вводим строковую переменную
-    getline(cin, lenght0);
-    if (lenght0.find_first_not_of("1234567890") != -1) { //если введенное значение содержит что-то кроме цифр, то выдается ошибка
-        cout << "ERROR! Please, enter nonegaive inter number: " << endl;
-        return PROVERKA_lenght(); //повторный ввод
-    }
-    else {
-        int lenght = stoi(lenght0); //если только цифры, то создаем переменную типа int
-        if (lenght>15){
-            lenght = critical_lenght;
-            return lenght; }
-    return stoi(lenght0);}
-}
+double x = 10, new_x;
+double alpha;
+int n = 1; //порядковый номер члена функционального ряда (по условию это 1)
+double initial_variable; //наши начальные вычисление
+double next_variable; //наши вычисления для следущей переменной
+double summa; //сумма для уже имеющихся значений
+double En_0; //значение погрешности
+vector<int> number;
+vector<double> variable_v;
+vector<double> summa_v;
+vector<double> En_0_v;
 
-void convertHeap(vector<int> &array, int len, int x) {
-    int largest = x;
-    int left = 2 * x + 1;
-    int right = 2 * x + 2;
-
-    if (left < len && array[left] > array[largest])
-        largest = left;
-
-    if (right < len && array[right] > array[largest])
-        largest = right;
-
-    if (largest != x)
-    {
-        swap(array[x], array[largest]);
-        convertHeap(array, len, largest);
-    }
-}
-
-void heap_sort(vector<int> &array, int len)
+double PROVERKA_NA_x() //проверка на введеное значение х
 {
-    for (int i = len / 2 - 1; i >= 0; i--)
-        convertHeap(array, len, i);
-
-    for (int i = len - 1; i >= 0; i--)
-    {
-        swap(array[0], array[i]);
-        convertHeap(array, i, 0);
-    }
+int input;
+cout « "Enter x: " « endl;
+while (!(cin » input) || (cin.peek() != '\n') || (input < -1) || (input > 1)) //проверка на ограничения
+{
+cin.clear();
+cin.ignore(32767, '\n'); //очистка потока ввода
+cout « "Please, enter a correct -1 <= x <= 1 : " « endl;
+}
+return input;
 }
 
-void heapSort(vector<int> &array) {
-    for (int i = lenght / 2 - 1; i >= 0; i--) {
-       heap_sort(array, lenght);
-    }
-    for (int i = lenght - 1; i >= 0; i--) {
-        swap(array[0], array[i]);
-        heap_sort(array, lenght);
-    }
-    return heap_sort(array, lenght);
-} 
-
-void heap_array_output(vector<int> &array) { //выводим отсортированный массив
-    cout << "The array sorted by heap: ";
-    for (int i = 0; i < array.size(); i++)
-        cout << array[i] << "  ";
-    cout << "\n";
+double PROVERKA_NA_alpha() //проверка на введеное значение alpha
+{
+cout « "Enter alpha: " « endl;
+while (!(cin » alpha) || (cin.peek() != '\n') || (alpha < 0)) //проверка на ограничения
+{
+cin.clear();
+cin.ignore(32767, '\n'); //очистка потока ввода
+cout « "Please, enter a correct 0 <= alpha: " « endl;
 }
-void generated_array_output(vector<int> &array) { //выводим массив из случайных значений
-    cout << "The random generated array: ";
-    for (int i = 0; i < array.size(); i++)
-        cout << array[i] << "  ";
-    cout << "\n";
+return alpha;
+}
+
+void output_table(int n, double a, double s, double En) {
+cout « "n = " « std::setw(5) « n « " | " //setw - установка ширины столбца таблицы
+« "An = " « std::setw(15) « a « " | "
+« "S = " « std::setw(9) « s « " | "
+« "En = " « std::setw(12) « En « " | " « "\n";
+}
+
+
+void calculation(double x, int n) {
+number.push_back(n); //push_back - функция библиотеки вектороввводит последним значение из собок в вектор
+initial_variable = next_variable;
+variable_v.push_back(initial_variable);
+summa += initial_variable;
+summa_v.push_back(summa);
+next_variable = pow(-1, (n + 1)) * ((pow(x, 2 * n)) / (2 * n * (2 * n + 1))); //формула n-ого члена
+En_0 = abs(next_variable / summa);
+En_0_v.push_back(En_0);
+output_table(n, initial_variable, summa, En_0); 
 }
 
 int main() {
-    string continuation;              //переменная для дальнейшей повторной работы алгоритма
-    while (continuation != "no") {   
-        lenght = PROVERKA_lenght();  //вводим переменную из функции, отвечающей за проверку ограничений на переменную
-        vector<int> array;
-        for (int i = 0; i < lenght; i++) {
-        array.push_back(rand()%1000);}
-        generated_array_output(array); //выводим неотсортированный массив
-        heapSort(array); 
-        heap_array_output(array); // выводим отсортированный массив
-        cout << "If you want to finish type no, else click..." << endl;
-        getline(cin, continuation);
-    }
-    cout << "Goodbye! Thank you for using our program! "<<endl;
+string result; //введение строковой переменной для повтора дальнейшей работы программы
+bool working = true; //вводим условие, при котором работает программа
+while (working) //пока наше значение является истиной
+{
+n = 0;
+En_0 = 100;
+new_x = PROVERKA_NA_x(); //запускаем заранее написанные функции для проверки и работы программы
+alpha = PROVERKA_NA_alpha();
+if (new_x == x) { //при повторном вводе сравниваем этот х и предыдущий
+if ((alpha == int(alpha) && alpha < number.back()) || (alpha != int(alpha) && En_0_v.back() < alpha))
+cout « "The value has already been calculated: \n";
+cout « "Previous calculations: " « endl;
+for (int i = 0; i < number.size(); i++)
+output_table(number[i], variable_v[i], summa_v[i], En_0_v[i]);
+n = number.back(); //присваиваем нашему начальному н значение последнего введенного в ветор
+summa = summa_v.back();
+En_0 = En_0_v.back();
 }
+else {
+number.clear(); //очищаем все векторы
+variable_v.clear();
+summa_v.clear();
+En_0_v.clear();
+x = new_x; //присваиваем х новое введеное значение
+next_variable = pow(x, 2) / 2; //считаем первый элемент по упрощенной формуле для одного элемента
+summa = 0; 
 
+if (alpha == int(alpha)) //если alpha целое, то она выступает в роли счетчика искомых значений
+{
+if (n <= alpha) //если альфа больше прошлого числа итерций, то считаем новые элементы
+cout « "New iteration: " « endl;
+for (n += 1; n <= alpha; n++)
+calculation(x, n);
+}
+else { //если alpha типа double, то она выступает в роли погрешности
+if (En_0 > alpha)
+cout « "New: " « endl;
+while (En_0 > alpha) {
+n++;
+calculation(x, n);
+}
+}
+cout « "Do you want to continue? (if you want to finish type no) "; // выбор пользователя, оставаться ли в программе
+cin » result;
+if (result == "NO" || result == "No" || result == "no") { //если пользователь вводит no, то программа завершается
+cout « "Thank you for using our program! All the best!";
+return 0;
+}
+}
+}
