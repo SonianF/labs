@@ -2,6 +2,9 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+
+//Пирамидальная сортировка
+
 using namespace std;
 int lenght;
 const int critical_lenght = 15;
