@@ -2,6 +2,8 @@
 #include <string>
 using namespace std;
 
+//Подсчитать количество  вхождений числа k в массив
+
 int PROVERKA_size_array() {            // Проверка на целое число для количества элементов массива
     string str_size = "";
     std::getline(std::cin, str_size); // Ввод строки
