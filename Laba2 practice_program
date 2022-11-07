@@ -2,6 +2,9 @@
 #include <iomanip> //библиотека для оформления таблицы
 #include <string> //библиотека для работы со строками
 #include <vector>
+
+//Вычисление суммы бесконечного ряда
+
 using namespace std; //чтобы каждый раз не писать std::
 
 double x = 10, new_x;
