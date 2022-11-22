@@ -1,0 +1,198 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <chrono>
+#include <windows.h>
+
+using namespace std;
+using namespace chrono;
+int length;
+int limiter_max = 1000, limiter_min = 5; 
+string len_int = "1234567890", len_double = "1234567890-.";
+string output0 = "Начальный массив: ", output = "Отсортированный нашей программой массив : ", output1 = "Автоматически отсортированный массив : ";
+string timevector = "Время работы нашего алгоритма: ", timesort = "Время работы автоматической сортировки: ", resulttime = "Сравнение нашего и автоматического алгоритма: ";
+const int critical_length = 15, RUS_symbols = 1251;
+char keybord[] = "Введите 1, чтобы ввести значения массива с клавиатуры: ";
+char random[] = "Введите 2, чтобы сгенерировать случайные значения: ";
+char random_small_sample[] = "Введите 3, чтобы сгенерировать случайные данный с малым числом уникальных значений: ";
+const int cin_const = 32767;
+
+void input_random(vector <double>& array, int lenght, int limiter)
+{
+	srand(time(NULL));
+	for (int i = 0; i < length; i++) {
+		array.push_back(rand() % limiter);
+	}
+}
+
+double check_input(string len) { //проверка введенных значений для длины массива
+	string length0 = " "; //вводим строковую переменную
+	//getline(cin, length0);
+	cin >> length0;
+	//getline(cin, length0);
+	while ( length0.find_first_not_of(len) != -1) { //если введенное значение содержит что-то кроме цифр, то выдается ошибка
+		cout << "ОШИБКА! Введите неотрицательное целое число: ";
+		return check_input(len); //повторный ввод
+	}
+	if (stod(length0) == 0)
+		{
+			cout << "Введите целое число больше 0: ";
+			return check_input(len); //повторный ввод
+		}
+	else
+		return stod(length0);
+}
+
+void convertHeap(vector<double>& array, int len, int x) {
+	int largest = x;  //наше начальное значение - родитель
+	int left = 2 * x + 1; //дочернее левое
+	int right = 2 * x + 2; //дочернее правое
+	/*далее мы сравниваем длину и дочерний элемент, а также сравниваем
+	число в массиве с индексом дочернего и число в массиве с индексом родительского элемента*/
+	if (left < len && array[left] > array[largest])
+		largest = left;
+	if (right < len && array[right] > array[largest])
+		largest = right;
+	/*если в результате двух верхних операций взятое нами изначальное значение "родителя" не совпадает с конечным,
+	то мы меняем х и конечное значение местами */
+	if (largest != x)
+	{
+		swap(array[x], array[largest]);
+		convertHeap(array, len, largest);
+	}
+}
+
+vector <double> heap_sort(vector<double>& array, int len)
+{
+	for (int i = len / 2 - 1; i >= 0; --i) //отделяем половину от всей длины - в этом помежутке находится родитель
+		convertHeap(array, len, i); //отправляем значения в наш алгоритм
+	for (int i = len - 1; i >= 0; --i)  //
+	{
+		swap(array[0], array[i]); //мы меняем нулевой элемент и i-ый местами
+		convertHeap(array, i, 0); //отправляем в наш алгоритм 0-ой элемент и сравниваем на отрезке значений i
+	}
+	return array;
+}
+
+void input_keybord(vector <double>& array_key, int length)
+{
+	for (int i = 1; i <= length; i++)
+	{
+		std::cout << "Введите " << i << " элемент:" << endl;
+		double a = check_input(len_double);
+		array_key.emplace_back(a);
+	}
+}
+
+void random_vector(vector <double>& array_key, int length)
+{
+	for (int i = 1; i <= length; i++)
+	{
+		double a;
+		cout << "Введите " << i << " элемент:" << endl;
+		while (!(cin >> a) || (cin.peek() != '\n'))
+		{
+			cin.clear();
+			cin.ignore(cin_const, '/n');
+			cout << "Введите число: ";
+		}
+		array_key.emplace_back(a);
+	}
+}
+
+void output_vector(string output, vector <double>& array) {
+	cout << output;
+	if (length > critical_length) {
+		for (int i = 0; i < critical_length; i++) {
+			int s = array[i];
+			cout << s << " ";
+		}
+	}
+	else {
+		for (int i = 0; i < length; i++)
+			cout << array[i] << " ";
+	}
+	cout << "\n";
+}
+
+char check_choice()
+{
+	char choice;
+	cout << keybord << endl;
+	cout << random << endl;
+	cout << random_small_sample << endl;
+	while (!(cin >> choice) || cin.peek() != '\n' || choice != '1' && choice != '2' && choice != '3')
+	{
+		cin.clear();
+		cin.ignore(cin_const, '\n');
+		cout << "Введите 1,2 или 3: ";
+	}
+	return choice;
+
+}
+
+bool check_process()
+{
+	char cont;
+	cout << "Введите Д чтобы продолжить, С - для выхода из программы: ";
+	while (!(cin >> cont) || cin.peek() != '\n' || (cont != 'д' && cont != 'Д' && cont != 'с' && cont != 'С'))
+	{
+		cin.clear();
+		cin.ignore(cin_const, '\n');
+		cout << "Введите, пожалуйста, Д (далее) или  С (стоп):  ";
+	}
+	if (cont == 'д' || cont == 'Д')
+		return true;
+	else
+	{
+		cout << "Спасибо за использование нашей программы! Всего наилучшего!";
+		return false;
+	}
+}
+
+int main()
+{
+	SetConsoleCP(RUS_symbols);
+	SetConsoleOutputCP(RUS_symbols);
+	bool process = true; //переменная для дальнейшей повторной работы алгоритма
+	while (process) {
+		int choice = check_choice();
+		cout << "Введите длину массива: ";
+		length = check_input(len_int);
+		vector<double> array;
+		switch (choice)
+		{
+		case '1':
+			input_keybord(array, length);
+			break;
+		case '2':
+			input_random(array, length, limiter_max);
+			break;
+		case '3':
+			input_random(array, length, limiter_min);
+			break;
+		}
+		output_vector(output0, array);
+
+		steady_clock::time_point start_vector = steady_clock::now();
+		vector <double> my_sorted_vector = heap_sort(array, length);
+		steady_clock::time_point end_vector = steady_clock::now();
+		double time_vector = duration_cast<nanoseconds>(end_vector - start_vector).count();
+		output_vector(output, my_sorted_vector);
+
+		steady_clock::time_point start_sort = steady_clock::now();
+		sort(array.begin(), array.end());
+		steady_clock::time_point end_sort = steady_clock::now();
+		double time_sort = duration_cast<nanoseconds>(end_sort - start_sort).count();
+		output_vector(output1, my_sorted_vector);
+
+		cout << timevector << time_vector / 1000 << " миллисекунд" << endl;
+		cout << timesort << time_sort / 1000 << " миллисекунд" << endl;
+		if (time_vector <= time_sort)
+			cout << resulttime << "наш алгоритм быстрее в " << time_sort / time_vector << " раз" << endl;
+		else
+			cout << resulttime <<"наш алгоритм медленнее в " << time_vector / time_sort << " раз" << endl;
+		process = check_process();
+	}
+}
