@@ -21,8 +21,8 @@ vector <char> reading_file(ifstream& fin)
 
 bool check_separator(char ch)
 {
-    char sep[] = { ' ',  ',','\n', '!', '.', '"', ';', ':', '?','(',')' };
-    return(find(begin(sep), end(sep), ch) != end(sep) ); //ищем разделитель, если нашли - true
+    char sep[] = { ' ',  ',','\n', '!', '.', '"', ';', ':', '?','(',')' ,'\0'};
+    return(find(begin(sep), end(sep), ch) != end(sep)); //ищем разделитель, если нашли - true
 }
 
 void length_change(vector <char>& array)
@@ -44,6 +44,10 @@ void length_change(vector <char>& array)
         else
             length++;
     }
+    if (length > max_length) {
+        maximum_length = length;
+        k = n;
+    }
     int l = k - max_length;
     while (l < k)
     {
@@ -53,7 +57,7 @@ void length_change(vector <char>& array)
     }
 }
 
-void output_to_file(vector<char>& array, ofstream& fout) 
+void output_to_file(vector<char>& array, ofstream& fout)
 {
     fout << "---------------------RESULT------------------------\n";//для отделения результатов выполнения программы в файле output
     for (int i = 0; i < array.size(); i++) //пока i меньше размера файла, записываются значения в файл
@@ -88,7 +92,7 @@ int main()
     bool process = true;
     while (process)
     {
-        char file_name[100]; //создаем массив для записи названия файла, с которым будем работать
+        char file_name[1000]; //создаем массив для записи названия файла, с которым будем работать
         cout << "Please, enter the name of the file: ";
         cin >> file_name;
         ifstream fin(file_name); //создаем объект для чтения нашего файла
