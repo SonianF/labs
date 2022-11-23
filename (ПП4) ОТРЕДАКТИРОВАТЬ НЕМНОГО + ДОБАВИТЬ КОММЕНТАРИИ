@@ -8,8 +8,8 @@
 using namespace std;
 using namespace chrono;
 int length;
-int limiter_max = 1000, limiter_min = 5; 
-string len_int = "1234567890", len_double = "1234567890-.";
+int limiter_max = 1000, limiter_min = 5;
+string len_int = "1234567890", len_double = "1234567890-";
 string output0 = "Начальный массив: ", output = "Отсортированный нашей программой массив : ", output1 = "Автоматически отсортированный массив : ";
 string timevector = "Время работы нашего алгоритма: ", timesort = "Время работы автоматической сортировки: ", resulttime = "Сравнение нашего и автоматического алгоритма: ";
 const int critical_length = 15, RUS_symbols = 1251;
@@ -18,32 +18,44 @@ char random[] = "Введите 2, чтобы сгенерировать слу�
 char random_small_sample[] = "Введите 3, чтобы сгенерировать случайные данный с малым числом уникальных значений: ";
 const int cin_const = 32767;
 
-void input_random(vector <double>& array, int lenght, int limiter)
+char check_choice()
 {
-	srand(time(NULL));
-	for (int i = 0; i < length; i++) {
-		array.push_back(rand() % limiter);
+	char choice;
+	cout << keybord << endl;
+	cout << random << endl;
+	cout << random_small_sample << endl;
+	while (!(cin >> choice) || cin.peek() != '\n' || choice != '1' && choice != '2' && choice != '3')
+	{
+		cin.clear();
+		cin.ignore(cin_const, '\n');
+		cout << "Введите 1,2 или 3: ";
 	}
+	return choice;
+
 }
 
-double check_input(string len) { //проверка введенных значений для длины массива
-	string length0 = " "; //вводим строковую переменную
-	//getline(cin, length0);
-	cin >> length0;
-	//getline(cin, length0);
-	while ( length0.find_first_not_of(len) != -1) { //если введенное значение содержит что-то кроме цифр, то выдается ошибка
-		cout << "ОШИБКА! Введите неотрицательное целое число: ";
-		return check_input(len); //повторный ввод
-	}
-	if (stod(length0) == 0)
+long long check_input(string len) { //проверка введенных значений для длины массива
+	try {
+		string length0 = " "; //вводим строковую переменную
+		cin >> length0;
+		while (length0.find_first_not_of(len) != -1) { //если введенное значение содержит что-то кроме цифр, то выдается ошибка
+			std::cout << "ОШИБКА! Введите целое число: ";
+			return check_input(len); //повторный ввод
+		}
+		if (stoll(length0) == 0 || stoll(length0) == 9223373036854775807)
 		{
 			cout << "Введите целое число больше 0: ";
 			return check_input(len); //повторный ввод
 		}
-	else
-		return stod(length0);
+		else
+			return stoll(length0);
+	}
+catch (...) {
+	cout <<"Значение больше допустимого значения типа long long. Пожалуйста, введите число меньше "<<endl;
+	return check_input(len);
 }
 
+}
 void convertHeap(vector<double>& array, int len, int x) {
 	int largest = x;  //наше начальное значение - родитель
 	int left = 2 * x + 1; //дочернее левое
@@ -80,24 +92,16 @@ void input_keybord(vector <double>& array_key, int length)
 	for (int i = 1; i <= length; i++)
 	{
 		std::cout << "Введите " << i << " элемент:" << endl;
-		double a = check_input(len_double);
+		long long a = check_input(len_double);
 		array_key.emplace_back(a);
 	}
 }
 
-void random_vector(vector <double>& array_key, int length)
+void input_random(vector <double>& array, int lenght, int limiter)
 {
-	for (int i = 1; i <= length; i++)
-	{
-		double a;
-		cout << "Введите " << i << " элемент:" << endl;
-		while (!(cin >> a) || (cin.peek() != '\n'))
-		{
-			cin.clear();
-			cin.ignore(cin_const, '/n');
-			cout << "Введите число: ";
-		}
-		array_key.emplace_back(a);
+	srand(time(NULL));
+	for (int i = 0; i < length; i++) {
+		array.push_back(rand() % limiter);
 	}
 }
 
@@ -114,22 +118,6 @@ void output_vector(string output, vector <double>& array) {
 			cout << array[i] << " ";
 	}
 	cout << "\n";
-}
-
-char check_choice()
-{
-	char choice;
-	cout << keybord << endl;
-	cout << random << endl;
-	cout << random_small_sample << endl;
-	while (!(cin >> choice) || cin.peek() != '\n' || choice != '1' && choice != '2' && choice != '3')
-	{
-		cin.clear();
-		cin.ignore(cin_const, '\n');
-		cout << "Введите 1,2 или 3: ";
-	}
-	return choice;
-
 }
 
 bool check_process()
@@ -192,7 +180,7 @@ int main()
 		if (time_vector <= time_sort)
 			cout << resulttime << "наш алгоритм быстрее в " << time_sort / time_vector << " раз" << endl;
 		else
-			cout << resulttime <<"наш алгоритм медленнее в " << time_vector / time_sort << " раз" << endl;
+			cout << resulttime << "наш алгоритм медленнее в " << time_vector / time_sort << " раз" << endl;
 		process = check_process();
 	}
 }
