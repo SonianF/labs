@@ -156,6 +156,11 @@ void insert (vector <double>& array)
 
 }
 
+void erace (vector<double>& array)
+{
+
+}
+
 int main()
 
 {
