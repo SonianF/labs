@@ -1,0 +1,199 @@
+#include <iostream>
+
+#include <string>
+
+#include <vector>
+
+#include <algorithm>
+
+#include <chrono>
+
+using namespace std;
+
+using namespace chrono;
+
+int length;
+
+string lenght = "1234567890", len_int = "1234567890-";
+
+const int cin_const = 32767;
+
+char check_choice()
+
+{
+
+	char choice;	cout << "Input an operation (insert/erace) > " << endl;
+
+	while (!(cin >> choice) || cin.peek() != '\n' || choice != '1' && choice != '2')
+
+	{
+
+		cin.clear();
+
+		cin.ignore(cin_const, '\n');
+
+		cout << "Please, enter 1 - insert or 2 - erace> ";
+
+	}
+
+	return choice;
+
+}
+
+int check_input(string len) { //проверка введенных значений для длины массива
+
+	try {
+
+		string length0 = " "; //вводим строковую переменную
+
+		cin >> length0;
+
+		while (length0.find_first_not_of(len) != -1) { //если введенное значение содержит что-то кроме цифр, то выдается ошибка
+
+			std::cout << "ERROR!Input negative integer> ";
+
+			return check_input(len); //повторный ввод
+
+		}
+
+			return stoi(length0);
+
+	}
+
+catch (...) {
+
+	cout <<"Значение больше допустимого значения типа long long. Пожалуйста, введите число меньше "<<endl;
+
+	return check_input(len);
+
+}
+
+}
+
+void input_keybord(vector <double>& array_key, int length)
+
+{
+
+	for (int i = 1; i <= length; i++)
+
+	{
+
+		std::cout << "Введите " << i << " элемент:" << endl;
+
+		int a = check_input(len_int);
+
+		array_key.emplace_back(a);
+
+	}
+
+}
+
+void output_vector(string output, vector <double>& array) {
+
+	cout << output;
+
+		for (int i = 0; i < length; i++)
+
+			cout << array[i] << " ";
+
+	cout << "\n";
+
+}
+
+bool check_process()
+
+{
+
+	char cont;
+
+	cout << "Continue? Y/N >";
+
+	while (!(cin >> cont) || cin.peek() != '\n' || (cont != 'y' && cont != 'Y' && cont != 'n' && cont != 'N'))
+
+	{
+
+		cin.clear();
+
+		cin.ignore(cin_const, '\n');
+
+		cout << "Please, enter Y/N > ";
+
+	}
+
+	if (cont == 'Y' || cont == 'y')
+
+		return true;
+
+	else
+
+	{
+
+		cout << "Thank you for using our program! All the best!";
+
+		return false;
+
+	}
+
+}
+
+void insert (vector <double>& array) 
+
+{
+
+    int position, integer;
+
+    cout << "Input a position> ";
+
+    cin >> position;
+
+    cout << "Input an integer> ";
+
+    cin >> integer;
+
+    array[position-1] = integer;
+
+    output_vector("Current array: ", array);
+
+}
+
+int main()
+
+{
+
+	bool process = true; //переменная для дальнейшей повторной работы алгоритма
+
+	while (process) {
+
+		cout << "Input the number integers> ";
+
+		length = check_input(len_int);
+
+		vector<double> array;
+
+		input_keybord(array, length);
+
+		output_vector("Current array: ", array);
+
+		int choice = check_choice();
+
+		switch(choice)
+
+		{ case '1':
+
+		   insert(array);
+
+		   break;
+
+		  //case '2':
+
+		   //erace(array);
+
+		 //  break;
+
+		}
+
+		process = check_process();
+
+	}
+
+}
