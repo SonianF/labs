@@ -1,58 +1,3 @@
-#include <iostream>
-
-#include <string>
-
-#include <vector>
-
-#include <algorithm>
-
-#include <chrono>
-
-#include <windows.h>
-
-using namespace std;
-
-using namespace chrono;
-
-int length;
-
-int limiter_max = 1000, limiter_min = 5;
-
-string len_int = "1234567890", len_double = "1234567890-";
-
-string output0 = "Начальный массив: ", output = "Отсортированный нашей программой массив : ", output1 = "Автоматически отсортированный массив : ";
-
-string timevector = "Время работы нашего алгоритма: ", timesort = "Время работы автоматической сортировки: ", resulttime = "Сравнение нашего и автоматического алгоритма: ";
-
-const int critical_length = 15, RUS_symbols = 1251;
-
-char keybord[] = "Введите 1, чтобы ввести значения массива с клавиатуры: ";
-
-char random[] = "Введите 2, чтобы сгенерировать случайные значения: ";
-
-char random_small_sample[] = "Введите 3, чтобы сгенерировать случайные данный с малым числом уникальных значений: ";
-
-const int cin_const = 32767;
-
-char check_choice()
-
-{
-
-	char choice;	cout << keybord << endl;
-
-	cout << random << endl;
-
-	cout << random_small_sample << endl;
-
-	while (!(cin >> choice) || cin.peek() != '\n' || choice != '1' && choice != '2' && choice != '3')
-
-	{
-
-		cin.clear();
-
-		cin.ignore(cin_const, '\n');
-
-		cout << "Введите 1,2 или 3: ";
 
 	}
 
@@ -68,54 +13,7 @@ long long check_input(string len) { //проверка введенных зна
 
 		cin >> length0;
 
-		while (length0.find_first_not_of(len) != -1) { //если введенное значение содержит что-то кроме цифр, то выдается ошибка
-
-			std::cout << "ОШИБКА! Введите целое число: ";
-
-			return check_input(len); //повторный ввод
-
-		}
-
-		if (stoll(length0) == 0 || stoll(length0) == 9223373036854775807)
-
-		{
-
-			cout << "Введите целое число больше 0: ";
-
-			return check_input(len); //повторный ввод
-
-		}
-
-		else
-
-			return stoll(length0);
-
-	}
-
-catch (...) {
-
-	cout <<"Значение больше допустимого значения типа long long. Пожалуйста, введите число меньше "<<endl;
-
-	return check_input(len);
-
-}
-
-}
-
-void input_keybord(vector <double>& array_key, int length)
-
-{
-
-	for (int i = 1; i <= length; i++)
-
-	{
-
-		std::cout << "Введите " << i << " элемент:" << endl;
-
-		long long a = check_input(len_double);
-
-		array_key.emplace_back(a);
-
+		whil
 	}
 
 }
@@ -198,16 +96,13 @@ int main()
 
 		int choice = check_choice();
 
-		cout << "Введите длину массива: ";
-
 		length = check_input(len_int);
 
 		vector<double> array;
 
 		input_keybord(array, length);
 
-		output_vector(output0, array);
+		(output0, array);
 
-		process = check_process();
 
-	}
+	
