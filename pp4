@@ -22,13 +22,13 @@ vector <char> reading_file(ifstream& fin)
     return str; // возвращаем векторную переменную в функцию
 }
 
-string s_reading_file(ifstream& fin)
+string s_reading_file(ifstream& fin2)
 {
     char ch;
-    string str= " ";
-    while (fin.get(ch)) //пока есть символы в файле, сохраняет их в переменную ch
+    string str = "";
+    while (fin2.get(ch)) //пока есть символы в файле, сохраняет их в переменную ch
         str.push_back(ch); //последний введенный символ в ch перезаписывает в str
-    fin.close(); //закрываем файл
+    fin2.close(); //закрываем файл
     return str; // возвращаем векторную переменную в функцию
 }
 
@@ -102,22 +102,20 @@ void length_change(string& str)
     }
 }
 
-void output_to_file(vector<char>& array, ofstream& fout)
+void output_to_file(vector<char>& array, ofstream& fout, double time)
 {
-    fout << "---------------------RESULT--vector------------------------\n";//для отделения результатов выполнения программы в файле output
+    fout << "Результат выполнения программы с помощью vector char: \n";//для отделения результатов выполнения программы в файле output
     for (int i = 0; i < array.size(); i++) //пока i меньше размера файла, записываются значения в файл
         fout << array[i];
     fout << endl;
-    fout.close();
+    fout << "Среднее время выполнения с помощью vector char: " << time / 1000 << " миллисекунд" << endl;
 }
 
-void s_output_to_file(string& str, ofstream& fout)
+void s_output_to_file(string& str, ofstream& fout, double time)
 {
-    fout << "---------------------RESULT--string------------------------\n";//для отделения результатов выполнения программы в файле output
-    for (int i = 0; i < str.length(); i++) //пока i меньше размера файла, записываются значения в файл
-        fout << str[i];
-    fout << endl;
-    fout.close();
+    fout << "Результат выполнения программы с помощью string: \n" << str << endl;//для отделения результатов выполнения программы в файле output
+    fout << "Время работы алгоритма с использованием string: " << time / 1000 << " миллисекунд" << endl;
+    fout << "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------" << endl;
 }
 
 bool check_process()
@@ -153,27 +151,27 @@ int main()
             cout << "The file cannot be opened!\n";
         else
         {
-            steady_clock::time_point start_vector = steady_clock::now();
+            ifstream fin(file_name);
             vector <char> array = reading_file(fin);
+            steady_clock::time_point start_vector = steady_clock::now();
             length_change(array);
             steady_clock::time_point end_vector = steady_clock::now();
             double time_vector = duration_cast<nanoseconds>(end_vector - start_vector).count();
 
+            ifstream fin2(file_name);
+            string str = s_reading_file(fin2);
             steady_clock::time_point start_string = steady_clock::now();
-            string str = s_reading_file(fin);
             length_change(str);
             steady_clock::time_point end_string = steady_clock::now();
             double time_string = duration_cast<nanoseconds>(end_string - start_string).count();
 
             ofstream fout("output.txt", ios_base::app); //создаем файловый поток вывода(ios_base::app для записи в конец файла)
-            output_to_file(array, fout); //записать результат в файл
+            output_to_file(array, fout, time_vector); //записать результат в файл
             fout << endl;
-            s_output_to_file(str, fout); //записать результат в файл
-            fout.close();
+            s_output_to_file(str, fout, time_string); //записать результат в файл
             cout << "Результат выполнения программы записан в файл output.txt.\n";
-
-            cout << "Время работы алгоритма с использованием vector: " << time_vector / 1000 << " миллисекунд" << endl;
-            cout << "Время работы алгоритма с использованием string: " << time_string/ 1000 << " миллисекунд" << endl;
+            fout << endl;
+            fout.close();
         };
         process = check_process();
     }
