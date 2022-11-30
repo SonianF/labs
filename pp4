@@ -1,0 +1,180 @@
+#include <iostream> //библиотека ввода-вывода в консоль и из нее
+#include <fstream> //библиотека ввода-вывода в файл
+#include <vector> //контейнер векторов
+#include <windows.h> //библиотека для работы с русскими символами
+#include <string>
+#include <chrono>
+//Заменить в самом длинном слове строки буквы 'a' на 'b'.
+
+using namespace std;
+using namespace chrono;
+
+const int symbols_ignore = 32767, RUS_symbols = 1251;
+char symbol = 'a', new_symbol = 'b';
+
+vector <char> reading_file(ifstream& fin)
+{
+    char ch;
+    vector<char> str;
+    while (fin.get(ch)) //пока есть символы в файле, сохраняет их в переменную ch
+        str.push_back(ch); //последний введенный символ в ch перезаписывает в str
+    fin.close(); //закрываем файл
+    return str; // возвращаем векторную переменную в функцию
+}
+
+string s_reading_file(ifstream& fin)
+{
+    char ch;
+    string str= " ";
+    while (fin.get(ch)) //пока есть символы в файле, сохраняет их в переменную ch
+        str.push_back(ch); //последний введенный символ в ch перезаписывает в str
+    fin.close(); //закрываем файл
+    return str; // возвращаем векторную переменную в функцию
+}
+
+bool check_separator(char ch)
+{
+    char sep[] = { ' ',  ',','\n', '!', '.', '"', ';', ':', '?','(',')' ,'\0' };
+    return(find(begin(sep), end(sep), ch) != end(sep)); //ищем разделитель, если нашли - true
+}
+
+void length_change(vector <char>& array)
+{
+    int max_length = 0; //вводим начальное значение длины
+    int& maximum_length = max_length;
+    int k = 0;
+    int n = 0; //номер индекс вектора
+    int length = 0; //длина слова
+    for (; n < array.size(); n++)
+    {
+        if (check_separator(array[n])) { //встречается разделяющий символ
+            if (length > max_length) {
+                maximum_length = length;
+                k = n;
+            }
+            length = 0; //сброс длины слова
+        }
+        else
+            length++;
+    }
+    if (length > max_length) {
+        maximum_length = length;
+        k = n;
+    }
+    int l = k - max_length;
+    while (l < k)
+    {
+        if (array[l] == 'a')
+            array[l] = 'b';
+        l++;
+    }
+}
+
+void length_change(string& str)
+{
+    int max_length = 0; //вводим начальное значение длины
+    int& maximum_length = max_length;
+    int k = 0;
+    int n = 0; //номер индекс вектора
+    int length = 0; //длина слова
+    for (; n < str.length(); n++)
+    {
+        if (check_separator(str[n])) { //встречается разделяющий символ
+            if (length > max_length) {
+                maximum_length = length;
+                k = n;
+            }
+            length = 0; //сброс длины слова
+        }
+        else
+            length++;
+    }
+    if (length > max_length) {
+        maximum_length = length;
+        k = n;
+    }
+    int l = k - max_length;
+    while (l < k)
+    {
+        if (str[l] == 'a')
+            str[l] = 'b';
+        l++;
+    }
+}
+
+void output_to_file(vector<char>& array, ofstream& fout)
+{
+    fout << "---------------------RESULT--vector------------------------\n";//для отделения результатов выполнения программы в файле output
+    for (int i = 0; i < array.size(); i++) //пока i меньше размера файла, записываются значения в файл
+        fout << array[i];
+    fout << endl;
+    fout.close();
+}
+
+void s_output_to_file(string& str, ofstream& fout)
+{
+    fout << "---------------------RESULT--string------------------------\n";//для отделения результатов выполнения программы в файле output
+    for (int i = 0; i < str.length(); i++) //пока i меньше размера файла, записываются значения в файл
+        fout << str[i];
+    fout << endl;
+    fout.close();
+}
+
+bool check_process()
+{
+    cout << "Continue? (Y/N) >";
+    char answer;
+    while (!(cin >> answer) || cin.peek() != '\n' || (answer != 'y' && answer != 'Y' && answer != 'n' && answer != 'N'))
+    {
+        cin.clear();
+        cin.ignore(symbols_ignore, '\n');
+        cout << "ERROR! Please enter Y or N: ";
+    }
+    if (answer == 'y' || answer == 'Y')
+        return true;
+    else {
+        cout << "Thank you for using our program! All the best you :)";
+        return false;
+    }
+}
+
+int main()
+{
+    SetConsoleCP(RUS_symbols);
+    SetConsoleOutputCP(RUS_symbols);
+    bool process = true;
+    while (process)
+    {
+        char file_name[1000]; //создаем массив для записи названия файла, с которым будем работать
+        cout << "Please, enter the name of the file: ";
+        cin >> file_name;
+        ifstream fin(file_name); //создаем объект для чтения нашего файла
+        if (!fin.is_open())
+            cout << "The file cannot be opened!\n";
+        else
+        {
+            steady_clock::time_point start_vector = steady_clock::now();
+            vector <char> array = reading_file(fin);
+            length_change(array);
+            steady_clock::time_point end_vector = steady_clock::now();
+            double time_vector = duration_cast<nanoseconds>(end_vector - start_vector).count();
+
+            steady_clock::time_point start_string = steady_clock::now();
+            string str = s_reading_file(fin);
+            length_change(str);
+            steady_clock::time_point end_string = steady_clock::now();
+            double time_string = duration_cast<nanoseconds>(end_string - start_string).count();
+
+            ofstream fout("output.txt", ios_base::app); //создаем файловый поток вывода(ios_base::app для записи в конец файла)
+            output_to_file(array, fout); //записать результат в файл
+            fout << endl;
+            s_output_to_file(str, fout); //записать результат в файл
+            fout.close();
+            cout << "Результат выполнения программы записан в файл output.txt.\n";
+
+            cout << "Время работы алгоритма с использованием vector: " << time_vector / 1000 << " миллисекунд" << endl;
+            cout << "Время работы алгоритма с использованием string: " << time_string/ 1000 << " миллисекунд" << endl;
+        };
+        process = check_process();
+    }
+}
