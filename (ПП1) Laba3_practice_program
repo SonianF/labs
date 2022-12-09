@@ -1,24 +1,24 @@
-#include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <chrono>
-#include <windows.h>
+#include <iostream> //библиотека для использования cin и cout
+#include <string> //библиотека для использования string
+#include <vector> //библиотека для использования vector
+#include <algorithm> //библиотека для автоматической сортировки массива
+#include <chrono> //библиотека для использования счетчика времени
+#include <windows.h> //библиотека для использования русских букв при вводе и выводе
 
 using namespace std;
 using namespace chrono;
-int length;
-int limiter_max = 1000, limiter_min = 5;
-string len_int = "1234567890", len_double = "1234567890-";
+
+int length; // переменная длины
+int limiter_max = 1000, limiter_min = 5; //значения для создания рандомных значений
+string len_int = "1234567890", len_double = "1234567890-"; //ограничения на длину и вводимые с клавиатуры значения
 string output0 = "Начальный массив: ", output = "Отсортированный нашей программой массив : ", output1 = "Автоматически отсортированный массив : ";
 string timevector = "Время работы нашего алгоритма: ", timesort = "Время работы автоматической сортировки: ", resulttime = "Сравнение нашего и автоматического алгоритма: ";
-const int critical_length = 15, RUS_symbols = 1251;
+const int critical_length = 15, RUS_symbols = 1251, cin_const = 32767;; //константные значения
 char keybord[] = "Введите 1, чтобы ввести значения массива с клавиатуры: ";
 char random[] = "Введите 2, чтобы сгенерировать случайные значения: ";
 char random_small_sample[] = "Введите 3, чтобы сгенерировать случайные данный с малым числом уникальных значений: ";
-const int cin_const = 32767;
 
-char check_choice()
+char check_choice() //проверка на выбор пользователя
 {
 	char choice;
 	cout << keybord << endl;
@@ -34,7 +34,8 @@ char check_choice()
 
 }
 
-long long check_input(string len) { //проверка введенных значений для длины массива
+int check_input(string len) { //проверка введенных значений для длины массива
+//блок try catch исользуется для поиска ошибки, например, в нашем случае это недопустимого размера ввод длины
 	try {
 		string length0 = " "; //вводим строковую переменную
 		cin >> length0;
@@ -42,20 +43,20 @@ long long check_input(string len) { //проверка введенных зна
 			std::cout << "ОШИБКА! Введите целое число: ";
 			return check_input(len); //повторный ввод
 		}
-		if (stoll(length0) == 0 || stoll(length0) == 9223373036854775807)
+		if (stoi(length0) == 0 || stoll(length0) == 9223373036854775807)
 		{
 			cout << "Введите целое число больше 0: ";
 			return check_input(len); //повторный ввод
 		}
 		else
-			return stoll(length0);
+			return stoi(length0);
 	}
 catch (...) {
-	cout <<"Значение больше допустимого значения типа long long. Пожалуйста, введите число меньше "<<endl;
+	cout <<"Значение больше допустимого значения типа. Пожалуйста, введите число поменьше "<<endl;
 	return check_input(len);
+	}
 }
 
-}
 void convertHeap(vector<double>& array, int len, int x) {
 	int largest = x;  //наше начальное значение - родитель
 	int left = 2 * x + 1; //дочернее левое
@@ -75,7 +76,7 @@ void convertHeap(vector<double>& array, int len, int x) {
 	}
 }
 
-vector <double> heap_sort(vector<double>& array, int len)
+vector <double> heap_sort(vector<double>& array, int len) 
 {
 	for (int i = len / 2 - 1; i >= 0; --i) //отделяем половину от всей длины - в этом помежутке находится родитель
 		convertHeap(array, len, i); //отправляем значения в наш алгоритм
@@ -87,7 +88,7 @@ vector <double> heap_sort(vector<double>& array, int len)
 	return array;
 }
 
-void input_keybord(vector <double>& array_key, int length)
+void input_keybord(vector <double>& array_key, int length) //функция для ввода с клавиатуры
 {
 	for (int i = 1; i <= length; i++)
 	{
@@ -97,7 +98,7 @@ void input_keybord(vector <double>& array_key, int length)
 	}
 }
 
-void input_random(vector <double>& array, int lenght, int limiter)
+void input_random(vector <double>& array, int lenght, int limiter) //функция для случайных чисел
 {
 	srand(time(NULL));
 	for (int i = 0; i < length; i++) {
@@ -105,7 +106,7 @@ void input_random(vector <double>& array, int lenght, int limiter)
 	}
 }
 
-void output_vector(string output, vector <double>& array) {
+void output_vector(string output, vector <double>& array) { //функция для вывода массива
 	cout << output;
 	if (length > critical_length) {
 		for (int i = 0; i < critical_length; i++) {
@@ -123,12 +124,12 @@ void output_vector(string output, vector <double>& array) {
 bool check_process()
 {
 	char cont;
-	cout << "Введите Д чтобы продолжить, С - для выхода из программы: ";
-	while (!(cin >> cont) || cin.peek() != '\n' || (cont != 'д' && cont != 'Д' && cont != 'с' && cont != 'С'))
+	cout << "Введите Д чтобы продолжить, Н - для выхода из программы: ";
+	while (!(cin >> cont) || cin.peek() != '\n' || (cont != 'д' && cont != 'Д' && cont != 'н' && cont != 'Н'))
 	{
 		cin.clear();
 		cin.ignore(cin_const, '\n');
-		cout << "Введите, пожалуйста, Д (далее) или  С (стоп):  ";
+		cout << "Введите, пожалуйста, Д (да) или  Н (нет):  ";
 	}
 	if (cont == 'д' || cont == 'Д')
 		return true;
@@ -141,8 +142,8 @@ bool check_process()
 
 int main()
 {
-	SetConsoleCP(RUS_symbols);
-	SetConsoleOutputCP(RUS_symbols);
+	SetConsoleCP(RUS_symbols); //используется для распознования введенных русских символов
+	SetConsoleOutputCP(RUS_symbols); //используется для вывода русских символов на консоль
 	bool process = true; //переменная для дальнейшей повторной работы алгоритма
 	while (process) {
 		int choice = check_choice();
