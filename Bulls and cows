@@ -1,0 +1,96 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <windows.h>
+
+using namespace std;
+const int RUS_symbol = 1251, cin_const = 32767;
+
+string reading_file(ifstream& fin)
+{
+	int n = 19;
+	srand(time(NULL));
+	int random = rand() % n + 1;
+	string result;
+	for (int i = 0; i < random; i++) {
+		getline(fin, result);
+	}
+	fin.close();
+	return result;
+}
+
+string getting_file () 
+{
+	char name_file[1000];
+	cout << "Введите название файла: ";
+	cin >> name_file;
+	ifstream fin(name_file);
+	if (!fin.is_open()) {
+		cout << "Файл не найден или не может быть открыт! \n";
+		return getting_file();
+	}
+	return name_file;
+}
+
+void game(ifstream& fin) 
+{
+	string user_word = " ";
+	string word = reading_file(fin);
+	cout << "Длина слова: " << word.size() << endl;
+	bool wording = true;
+	while (wording) {
+		cout << "Введите слово> ";
+		cin >> user_word;
+		while (user_word.size() != word.size()) {
+			cin.clear();
+			cout << "Введите слово длины " << word.size() << " >";
+			cin >> user_word;
+		}
+		int matches = 0;
+		for (int i = 0; i < word.size(); i++)
+		{
+			if (word[i] == user_word[i])
+				matches++;
+		}
+		cout << "Количество совпадений: " << matches << endl;
+		if (matches == word.size()) {
+			cout << "Игра окончена. Вы - победитель!" << endl;
+			wording = false;
+		}
+		else
+			wording = true;
+	}
+}
+
+bool check_process()
+{
+	cout << "Продолжить? (Д/Н) >";
+	char answer;
+	while (!(cin >> answer) || cin.peek() != '\n' || (answer != 'д' && answer != 'Д' && answer != 'н' && answer != 'Н'))
+	{
+		cin.clear();
+		cin.ignore(cin_const, '\n');
+		cout << "ОШИБКА! Введите Д или Н > ";
+	}
+	if (answer == 'д' || answer == 'Д')
+		return true;
+	else {
+		cout << "Спасибо за использование нашей программы! Всего наилучшего тебе :)";
+		return false;
+	}
+}
+
+int main()
+{
+	SetConsoleCP(RUS_symbol);
+	SetConsoleOutputCP(RUS_symbol);
+	cout << "Bulls and Cows" << endl;
+	bool process = true;
+	while (process)
+	{
+		string name_file = getting_file();
+		ifstream fin(name_file);
+		game(fin);
+		process = check_process();
+	}
+}
