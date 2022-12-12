@@ -1,0 +1,112 @@
+#include <iostream>
+#include <cmath>
+#include <string>
+
+using namespace std;
+
+string border0 = "-1";
+string zero = " ";
+string l_borders = "Input left border >", r_borders = "Input right border >";
+const int symbol_ignore = 32767;
+const long long int max_value = 1787109376;
+
+long long int check_input(string& border, string borders)
+{
+    try
+    {
+        cout << borders;
+        cin >> border;
+        if (border.find_first_not_of("0123456789") != -1) //если введены не цифры
+        {
+            cout << "ERROR! Enter negative integer number> ";
+            return check_input(border, zero);
+        }
+        else //если все хорошо
+        {
+            if (stoll(border) < stoll(border0)) { //сравниваем числа уже после второго ввода, потому что на первом пойдет на else
+                cout << "Enter a value greater than the left margin>";
+                return check_input(border, zero);
+            }
+            else
+            {
+                border0 = border; //заменяем значения border0 на введенное нами значение левой границы
+                return stoll(border); //возвращаем значение
+            }
+        }
+    }
+    catch (...) {
+        cout << "The entred value is greater than the allowed type value. Please, enter a smaller value again> ";
+        return check_input(border, zero);
+
+    }
+}
+
+bool automorphic(unsigned long long int a, unsigned long long int b)
+{
+    while ((a > 0) && (b) > 0)
+    {
+        if (a % 10 != b % 10)
+            return false;
+        a /= 10;
+        b /= 10;
+    }
+    return true;
+}
+
+void calculate (long long int& left_border, long long int& right_border )
+{
+    for (long long int i = left_border; i <= right_border; i++)
+    {
+        if (i == 0 || i == 1) {
+            cout << i << " ";
+        }
+        if ((i <= 100) && (i % 10 == 5 || i % 10 == 6)) {
+            if (automorphic(i, i * i)) {
+                cout << i << " ";
+            }
+        }
+        if (i % 1000 == 625 || i % 1000 == 376) {
+            if (automorphic(i, i * i)) {
+                cout << i << " ";
+            }
+        }
+        if (i > max_value)
+        {
+            right_border = max_value + 1;
+            cout << ".............." << endl;
+            cout << "Values cannot be calculated because string arithmetic must be used." << endl;
+        }
+    }
+}
+
+bool check_process()
+{
+    cout << "Continue? (Y/N) >";
+    string answer;
+    while (!(cin >> answer) || cin.peek() != '\n' || (answer != "y" && answer != "Y" && answer != "n" && answer != "N"))
+    {
+        cout << "ERROR! Please, enter Y or N > ";
+        getline(cin, answer);
+    }
+    if (answer == "y" || answer == "Y")
+        return true;
+    else {
+        cout << "Thank you for using our program! All the best you :)";
+        return false;
+    }
+}
+
+int main()
+{
+    bool process = true;
+    while (process) {
+        cout << "Automorphic numbers" << endl;
+        string l_border, r_border;
+        long long int left_border = check_input(l_border, l_borders);
+        long long int right_border = check_input(r_border, r_borders);
+        cout << "Automorphic numbers: ";
+        calculate(left_border, right_border);
+        process = check_process();
+        border0 = "-1";
+    }
+}
