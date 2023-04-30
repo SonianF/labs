@@ -43,19 +43,19 @@ public:
         for (int i = 0; i < rows; i++) {
             m_val[i] = new double[columns];
             for (int j = 0; j < columns; j++) {
-                m_val[i][j] = matrix.m[i][j];
+                m_val[i][j] = matrix.m_val[i][j];
             }
         }
     }
 
-    ~Matrix() {
+    ~Matrix() { // деструктор
         for (int i = 0; i < rows; i++) {
             delete[]m_val[i];
         }
         delete[]m_val;
     }
 
-    friend istream& operator>> (istream& file_in, Matrix& matrix) {
+    friend istream& operator>> (istream& file_in, Matrix& matrix) { //чтение из потока
         for (int i = 0; i < matrix.rows; i++) {
             for (int j = 0; j < matrix.columns; j++) {
                 file_in >> matrix.m_val[i][j];
@@ -64,24 +64,43 @@ public:
         return file_in;
     }
 
-    friend ostream& operator<< (ostream& file_out, const Matrix& matrix) {
+    friend ostream& operator<< (ostream& file_out, const Matrix& matrix) { //вывод объекта в поток
         for (int i = 0; i < matrix.rows; i++) {
             for (int j = 0; j < matrix.columns; j++) {
-                file_out << matrix.m_val[i][j] << " ";
+                cout << matrix.m_val[i][j] << " ";
             }
-            file_out << endl;
+            cout << endl;
         }
-        return file_out;
+        return cout;
     }
 
-    Matrix& operator= (const Matrix& matrix) {
+   //friend ostream& operator<< (ostream& file_out, const Matrix& matrix) {
+   //     for (int i = 0; i < matrix.rows; i++) {
+   //         for (int j = 0; j < matrix.columns; j++) {
+   //             file_out << matrix.m_val[i][j] << " ";
+     //       }
+    //        file_out << endl;
+    //    }
+     //   return file_out;
+   // }
+
+    void swap(int& a, int& b) {
+        int t = a;
+        a = b;
+        b = t;
+    }
+
+
+    Matrix& operator= (const Matrix& matrix) { //операция присваивания
         this -> ~Matrix();
-        Matrix(matrix.rows, matrix.columns);
-       // Matrix(matrix);
+        Matrix<int> matrix_temp(matrix.rows, matrix.columns);
+        swap(this->rows, matrix_temp.rows);
+        swap(this->columns, matrix_temp.columns);
+        this->m_val=matrix.m_val;
         return *this;
     }
 
-    bool operator== (const Matrix& matrix) {
+    bool operator== (const Matrix& matrix) { //сравнение
         if (rows == matrix.rows && columns == matrix.columns) {
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < columns; j++) {
@@ -95,9 +114,13 @@ public:
             return false;
     }
 
-    bool operator!= (const Matrix& matrix) {
+    bool operator!= (const Matrix& matrix) { //не равно
         return (!(*this==matrix));
     }
+
+   // bool operator> (const Matrix& matrix) { //не равно
+    //    return (!(*this == matrix));
+   // }
 
 
 };
@@ -116,7 +139,7 @@ int main()
     Matrix<int> A(2, 3);
     cin >> A;
     cout << A;
-    Matrix<int> B(2, 3);
+    Matrix<int> B(2);
     cin >> B;
     cout << B;
     cout << endl;
