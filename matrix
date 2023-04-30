@@ -1,7 +1,8 @@
 #include <iostream>
 using namespace std;
 
-template <typename T>
+int const error_const = -32741;
+
 class Matrix {
 private:
     int rows, columns;
@@ -91,12 +92,28 @@ public:
     }
 
 
-    Matrix& operator= (const Matrix& matrix) { //операция присваивания
+    /*Matrix& operator= (const Matrix& matrix) { //операция присваивания
         this -> ~Matrix();
-        Matrix<int> matrix_temp(matrix.rows, matrix.columns);
+        Matrix matrix_temp(matrix);
         swap(this->rows, matrix_temp.rows);
         swap(this->columns, matrix_temp.columns);
-        this->m_val=matrix.m_val;
+                double **ptr = this->m_val;
+                this->m_val = matrix_temp.m_val;
+                matrix_temp.m_val = ptr;
+        return *this;
+    }*/
+
+    Matrix& operator= (const Matrix& matrix) { //операция присваивания
+        this -> ~Matrix();
+        rows = matrix.rows;
+        columns = matrix.columns;
+        m_val = new double* [rows];
+        for (int i = 0; i < rows; i++) {
+            m_val[i] = new double[columns];
+            for (int j = 0; j < columns; j++) {
+                m_val[i][j] = matrix.m_val[i][j];
+            }
+        }
         return *this;
     }
 
@@ -118,36 +135,102 @@ public:
         return (!(*this==matrix));
     }
 
-   // bool operator> (const Matrix& matrix) { //не равно
-    //    return (!(*this == matrix));
-   // }
+    Matrix operator+ (const Matrix & matrix) { //сложение матриц равного размера
+        if (rows == matrix.rows && columns == matrix.columns) {
+            Matrix result(rows, columns);
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < columns; j++) {
+                    result.m_val[i][j] = m_val[i][j] + matrix.m_val[i][j];
+                }
+            }
+            return result;
 
+        }
+        else
+            return error_const;
+    }
+
+    Matrix operator- (const Matrix& matrix) { //вычиатние матриц равного размера
+        if (rows == matrix.rows && columns == matrix.columns) {
+            Matrix result(rows, columns);
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < columns; j++) {
+                    result.m_val[i][j] = m_val[i][j] - matrix.m_val[i][j];
+                }
+            }
+            return result;
+
+        }
+        else
+            return error_const;
+    }
+
+    Matrix operator* (const Matrix& matrix) { //умножение матриц
+        if (columns == matrix.rows) {
+            Matrix result(rows, matrix.columns);
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < matrix.columns; j++) {
+                    for (int s = 0; s < columns; s++) {
+                        result.m_val[i][j] += m_val[i][s] * matrix.m_val[s][j];
+                    }
+
+                }
+            }
+            return result;
+        }
+        else
+            return error_const;
+    }
+
+    Matrix operator* (const double num) { //умножение матрицы на число
+            Matrix result(rows, columns);
+            for (int i = 0; i < rows; i++) {
+                    for (int s = 0; s < columns; s++) {
+                        result.m_val[i][s] = m_val[i][s] * num;
+                }
+            }
+            return result;
+    }
+
+    Matrix operator/ (const double num) { //деление матрицы на число
+        if (num != 0) {
+            Matrix result(rows, columns);
+            for (int i = 0; i < rows; i++) {
+                for (int s = 0; s < columns; s++) {
+                    result.m_val[i][s] = m_val[i][s] / num;
+                }
+            }
+            return result;
+        }
+        else 
+            return error_const;
+    }
+
+   
 
 };
 
 
 
-
-
-
-
-
-
-
 int main()
 {
-    Matrix<int> A(2, 3);
+    Matrix A(2);
     cin >> A;
     cout << A;
-    Matrix<int> B(2);
+    Matrix B(2);
     cin >> B;
     cout << B;
     cout << endl;
     cout << (A == B);
     cout << endl;
+    cout << (A + B) << endl;
+    cout << (A *B) << endl;
     B = A;
-    cout << B;
+    cout << B << endl;
+    cout << (A * 8) << endl;
+    cout << (A / 2) << endl;
     cout << endl;
     cout << (A == B);
+
     return 0;
 }
