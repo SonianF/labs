@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-int const error_const = -32741;
+int const error_const = -31;
 
 class Matrix {
 private:
@@ -150,7 +150,7 @@ public:
             return error_const;
     }
 
-    Matrix operator- (const Matrix& matrix) { //вычиатние матриц равного размера
+    Matrix operator- (const Matrix& matrix) { //вычитание матриц равного размера
         if (rows == matrix.rows && columns == matrix.columns) {
             Matrix result(rows, columns);
             for (int i = 0; i < rows; i++) {
@@ -182,6 +182,8 @@ public:
             return error_const;
     }
 
+    // Matrix operator/ (const Matrix& matrix) //деление матриц
+
     Matrix operator* (const double num) { //умножение матрицы на число
             Matrix result(rows, columns);
             for (int i = 0; i < rows; i++) {
@@ -206,9 +208,79 @@ public:
             return error_const;
     }
 
-   
+    int trace_matrix(const Matrix& matrix) { //след матрицы
+        int result=0;
+        if (rows == columns) {
+            for (int i = 0; i < rows; i++) {
+                result += m_val[i][i];
+            }
+        }
+        else
+            result = error_const;
+        return result;
+    }
+
+    double determinal() { //определитель квадратной матрицы
+        double result;
+        if (rows == columns) {
+            if (rows == 1)
+                result = m_val[0][0];
+            if (rows == 2)
+                result = (m_val[0][0] * m_val[1][1]) - (m_val[0][1] * m_val[1][0]);
+            if (rows == 3) {
+                int sum_plus, sum_minus;
+                sum_plus = (m_val[0][0] * m_val[1][1] * m_val[2][2]) + (m_val[0][1] * m_val[1][2] * m_val[2][0]) + (m_val[0][2] * m_val[1][0] * m_val[2][1]);
+                sum_minus = (m_val[2][0] * m_val[1][1] * m_val[0][2]) + (m_val[0][1] * m_val[1][0] * m_val[2][2]) + (m_val[0][0] * m_val[1][2] * m_val[2][1]);
+                result = sum_plus - sum_minus;
+            }
+
+        }
+        else
+            result = error_const;
+        return result;
+    }
+
+    bool operator> (Matrix& matrix) { //строго больше
+        if (this->determinal() > matrix.determinal())
+            return 1;
+        else
+            return 0;
+    }
+
+    bool operator>= (Matrix& matrix) { //больше или равно
+        if (this->determinal() >= matrix.determinal())
+            return 1;
+        else
+            return 0;
+    }
+
+    bool operator< (Matrix& matrix) { // строго меньше
+        if (this->determinal() < matrix.determinal())
+            return 1;
+        else
+            return 0;
+    }
+    
+    bool operator<= (Matrix& matrix) { //меньше или равно
+        if (this->determinal() <= matrix.determinal())
+            return 1;
+        else
+            return 0;
+    }
+
+    Matrix Transpose() //транспонирование матрицы
+    {
+        Matrix result(columns, rows);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                result.m_val[j][i] = m_val[i][j];
+            }
+        }
+        return result;
+    }
 
 };
+
 
 
 
@@ -216,21 +288,12 @@ int main()
 {
     Matrix A(2);
     cin >> A;
-    cout << A;
+    cout << A << endl;
+    cout << A.Transpose();
+    cout << A.determinal();
     Matrix B(2);
     cin >> B;
-    cout << B;
-    cout << endl;
-    cout << (A == B);
-    cout << endl;
-    cout << (A + B) << endl;
-    cout << (A *B) << endl;
-    B = A;
     cout << B << endl;
-    cout << (A * 8) << endl;
-    cout << (A / 2) << endl;
-    cout << endl;
-    cout << (A == B);
-
+    cout << (A<=B);
     return 0;
 }
