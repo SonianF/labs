@@ -73,6 +73,33 @@ public:
         }
         return file_out;
     }
+
+    Matrix& operator= (const Matrix& matrix) {
+        this -> ~Matrix();
+        Matrix(matrix.rows, matrix.columns);
+       // Matrix(matrix);
+        return *this;
+    }
+
+    bool operator== (const Matrix& matrix) {
+        if (rows == matrix.rows && columns == matrix.columns) {
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < columns; j++) {
+                    if (m_val[i][j] != matrix.m_val[i][j])
+                        return false;
+                }
+            }
+            return true;
+        }
+        else
+            return false;
+    }
+
+    bool operator!= (const Matrix& matrix) {
+        return (!(*this==matrix));
+    }
+
+
 };
 
 
@@ -89,5 +116,15 @@ int main()
     Matrix<int> A(2, 3);
     cin >> A;
     cout << A;
+    Matrix<int> B(2, 3);
+    cin >> B;
+    cout << B;
+    cout << endl;
+    cout << (A == B);
+    cout << endl;
+    B = A;
+    cout << B;
+    cout << endl;
+    cout << (A == B);
     return 0;
 }
